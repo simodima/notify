@@ -5,22 +5,22 @@ import (
 	"io"
 )
 
-// Event is the event sent or received from a Channel
-type Event struct {
+// Message is the event sent or received from a Channel
+type Message struct {
 	data []byte
 }
 
-// NewEvent creates a new Event
-func NewEvent(d []byte) Event {
-	return Event{data: d}
+// NewMessage creates a new Message
+func NewMessage(d []byte) Message {
+	return Message{data: d}
 }
 
-// Data returns the event data
-func (e *Event) Data() []byte {
+// Data returns the message data
+func (e *Message) Data() []byte {
 	return e.data
 }
 
-// Write let the event write itself to the given io.Writer
-func (e *Event) Write(w io.Writer) {
+// Write let the message write itself to the given io.Writer
+func (e *Message) Write(w io.Writer) {
 	fmt.Fprintf(w, "data: %s\n\n", string(e.Data()))
 }
