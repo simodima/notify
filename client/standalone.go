@@ -5,8 +5,6 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/google/uuid"
-
 	"github.com/toretto460/notify/model"
 )
 
@@ -34,20 +32,20 @@ func (c *StandaloneClient) getOrCreateChan(id string) chan model.Message {
 }
 
 // Init will initialize the client
-func (c *StandaloneClient) Init(ctx context.Context, id uuid.UUID) error {
+func (c *StandaloneClient) Init(ctx context.Context, id string) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.events[id.String()] = make(chan model.Message)
+	c.events[id] = make(chan model.Message)
 	return nil
 }
 
-func (c *StandaloneClient) GetEvents(ctx context.Context, id uuid.UUID) (chan model.Message, error) {
-	return c.getOrCreateChan(id.String()), nil
+func (c *StandaloneClient) GetEvents(ctx context.Context, id string) (chan model.Message, error) {
+	return c.getOrCreateChan(id), nil
 }
 
-func (c *StandaloneClient) Send(ctx context.Context, ev model.Message, id uuid.UUID) error {
-	if events, ok := c.events[id.String()]; ok {
+func (c *StandaloneClient) Send(ctx context.Context, ev model.Message, id string) error {
+	if events, ok := c.events[id]; ok {
 		events <- ev
 		return nil
 	}

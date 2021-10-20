@@ -3,15 +3,13 @@ package channel
 import (
 	"context"
 
-	"github.com/google/uuid"
-
 	"github.com/toretto460/notify/model"
 )
 
 type cli interface {
-	Init(context.Context, uuid.UUID) error
-	GetEvents(context.Context, uuid.UUID) (chan model.Message, error)
-	Send(context.Context, model.Message, uuid.UUID) error
+	Init(context.Context, string) error
+	GetEvents(context.Context, string) (chan model.Message, error)
+	Send(context.Context, model.Message, string) error
 }
 
 // NewFactory creates a new Factory for channels

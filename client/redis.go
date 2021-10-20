@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/google/uuid"
 
 	"github.com/toretto460/notify/model"
 )
@@ -22,13 +21,13 @@ func NewRedis(cli *redis.Client) RedisClient {
 }
 
 // Init will initialize the client
-func (c *RedisClient) Init(context.Context, uuid.UUID) error {
+func (c *RedisClient) Init(context.Context, string) error {
 	return nil
 }
 
-// GetEvents allows to read the events for the given id uuid.UUID
-func (c *RedisClient) GetEvents(ctx context.Context, id uuid.UUID) (chan model.Message, error) {
-	pubsub := c.rds.Subscribe(ctx, id.String())
+// GetEvents allows to read the events for the given id
+func (c *RedisClient) GetEvents(ctx context.Context, id string) (chan model.Message, error) {
+	pubsub := c.rds.Subscribe(ctx, id)
 	ch := pubsub.Channel()
 
 	events := make(chan model.Message)
@@ -47,7 +46,7 @@ func (c *RedisClient) GetEvents(ctx context.Context, id uuid.UUID) (chan model.M
 	return events, nil
 }
 
-// Send sends an event to the given id uuid.UUID
-func (c *RedisClient) Send(ctx context.Context, ev model.Message, id uuid.UUID) error {
-	return c.rds.Publish(ctx, id.String(), ev.Data()).Err()
+// Send sends an event to the given id
+func (c *RedisClient) Send(ctx context.Context, ev model.Message, id string) error {
+	return c.rds.Publish(ctx, id, ev.Data()).Err()
 }

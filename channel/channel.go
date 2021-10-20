@@ -4,20 +4,16 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+
 	"github.com/toretto460/notify/model"
 )
 
 // FromID creates a channel from the the given id
 func FromID(chID string, client cli) (Channel, error) {
-	id, err := uuid.Parse(chID)
-	if err != nil {
-		return Channel{}, err
-	}
-
-	client.Init(context.Background(), id)
+	client.Init(context.Background(), chID)
 
 	return Channel{
-		id: id,
+		id: chID,
 		c:  client,
 	}, nil
 }
@@ -29,23 +25,23 @@ func NewChannel(client cli) (Channel, error) {
 		return Channel{}, err
 	}
 
-	client.Init(context.Background(), id)
+	client.Init(context.Background(), id.String())
 
 	return Channel{
-		id: id,
+		id: id.String(),
 		c:  client,
 	}, nil
 }
 
 // Channel represents the channel where the messages can be sent and received
 type Channel struct {
-	id uuid.UUID
+	id string
 	c  cli
 }
 
 // ID returns the channel identifier
 func (c *Channel) ID() string {
-	return c.id.String()
+	return c.id
 }
 
 // Send sends a message to the channel
