@@ -22,34 +22,34 @@ import (
 )
 
 // FromID creates a channel from the the given id
-func FromID(chID string, client cli) (Channel, error) {
-	client.Init(context.Background(), chID)
+func FromID(chID string, d driver) (Channel, error) {
+	d.Init(context.Background(), chID)
 
 	return Channel{
 		id: chID,
-		c:  client,
+		d:  d,
 	}, nil
 }
 
-// NewChannel creates a new Channel
-func NewChannel(client cli) (Channel, error) {
+// New creates a new Channel
+func New(d driver) (Channel, error) {
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return Channel{}, err
 	}
 
-	client.Init(context.Background(), id.String())
+	d.Init(context.Background(), id.String())
 
 	return Channel{
 		id: id.String(),
-		c:  client,
+		d:  d,
 	}, nil
 }
 
 // Channel represents the channel where the messages can be sent and received
 type Channel struct {
 	id string
-	c  cli
+	d  driver
 }
 
 // ID returns the channel identifier
@@ -59,10 +59,10 @@ func (c *Channel) ID() string {
 
 // Send sends a message to the channel
 func (c *Channel) Send(ctx context.Context, ev model.Message) error {
-	return c.c.Send(ctx, ev, c.id)
+	return c.d.Send(ctx, ev, c.id)
 }
 
 // Receive returns a go chan to receive messages over the channel
 func (c *Channel) Receive(ctx context.Context) (chan model.Message, error) {
-	return c.c.GetEvents(ctx, c.id)
+	return c.d.GetEvents(ctx, c.id)
 }

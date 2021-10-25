@@ -8,22 +8,18 @@ import (
 	"github.com/toretto460/notify/channel"
 )
 
-type channelUseCases interface {
-	New() (channel.Channel, error)
-}
-
-func NewOpenChannel(chUseCases channelUseCases) OpenChannel {
+func NewOpenChannel(chFactory *channel.Factory) OpenChannel {
 	return OpenChannel{
-		useCase: chUseCases,
+		factory: chFactory,
 	}
 }
 
 type OpenChannel struct {
-	useCase channelUseCases
+	factory *channel.Factory
 }
 
 func (e *OpenChannel) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	ch, err := e.useCase.New()
+	ch, err := e.factory.New()
 
 	if err != nil {
 		w.Write([]byte(err.Error()))

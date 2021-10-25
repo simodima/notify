@@ -8,25 +8,21 @@ import (
 	"github.com/toretto460/notify/model"
 )
 
-type channelOpener interface {
-	Get(id string) (channel.Channel, error)
-}
-
-func NewSendMessage(chUseCase channelOpener) SendMessage {
+func NewSendMessage(factory *channel.Factory) SendMessage {
 	return SendMessage{
-		useCase: chUseCase,
+		factory: factory,
 	}
 }
 
 type SendMessage struct {
-	useCase channelOpener
+	factory *channel.Factory
 }
 
 func (e *SendMessage) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	qs := r.URL.Query()
 	chID := qs.Get("channel")
 
-	ch, err := e.useCase.Get(chID)
+	ch, err := e.factory.Get(chID)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

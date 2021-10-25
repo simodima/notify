@@ -19,28 +19,29 @@ import (
 	"github.com/toretto460/notify/model"
 )
 
-type cli interface {
+type driver interface {
 	Init(context.Context, string) error
 	GetEvents(context.Context, string) (chan model.Message, error)
 	Send(context.Context, model.Message, string) error
 }
 
 // NewFactory creates a new Factory for channels
-func NewFactory(client cli) Factory {
-	return Factory{cli: client}
+func NewFactory(d driver) Factory {
+	return Factory{driver: d}
 }
 
 // Factory is the channel factory.
+// A channel factory is the entity responsible to create the Channel
 type Factory struct {
-	cli cli
+	driver driver
 }
 
 // New creates a new channel
 func (c *Factory) New() (Channel, error) {
-	return NewChannel(c.cli)
+	return New(c.driver)
 }
 
 // Get creates a new channel for the given id
 func (c *Factory) Get(id string) (Channel, error) {
-	return FromID(id, c.cli)
+	return FromID(id, c.driver)
 }
