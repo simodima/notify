@@ -8,7 +8,7 @@ import (
 	"github.com/go-redis/redis/v8"
 
 	"github.com/toretto460/notify/channel"
-	"github.com/toretto460/notify/client"
+	"github.com/toretto460/notify/driver"
 )
 
 var redisCli *redis.Client
@@ -24,8 +24,8 @@ func init() {
 }
 
 func main() {
-	redisClient := client.NewRedis(redisCli)
-	chFactory := channel.NewFactory(&redisClient)
+	redisDriver := driver.NewRedis(redisCli)
+	chFactory := channel.NewFactory(&redisDriver)
 	events := NewOpenChannel(&chFactory)
 	messages := NewSendMessage(&chFactory)
 

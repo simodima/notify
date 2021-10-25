@@ -6,15 +6,15 @@ import (
 	"time"
 
 	"github.com/toretto460/notify/channel"
-	"github.com/toretto460/notify/client"
+	"github.com/toretto460/notify/driver"
 	"github.com/toretto460/notify/model"
 )
 
 func main() {
 	ctx := context.TODO()
 
-	client := client.NewStandalone(ctx)
-	channeFactory := channel.NewFactory(&client)
+	driver := driver.NewStandalone(ctx)
+	channeFactory := channel.NewFactory(&driver)
 
 	ch, _ := channeFactory.New()
 
