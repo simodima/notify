@@ -7,8 +7,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	"github.com/toretto460/notify/channel"
-	"github.com/toretto460/notify/driver"
+	"github.com/toretto460/notify"
 )
 
 var redisCli *redis.Client
@@ -24,14 +23,14 @@ func init() {
 }
 
 func main() {
-	redisDriver := driver.NewRedis(redisCli)
-	chFactory := channel.NewFactory(&redisDriver)
-	events := NewOpenChannel(&chFactory)
-	messages := NewSendMessage(&chFactory)
+	chFactory := notify.Redis(redisCli)
+	messages := NewSendMessage(chFactory)
 
+	handler := notify.DefaultHandler(chFactory)
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fs)
-	http.Handle("/open", &events)
+
+	http.HandleFunc("/open", handler)
 	http.Handle("/notify", &messages)
 
 	log.Print("Starting web server at :3000")
