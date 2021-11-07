@@ -4,18 +4,18 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/toretto460/notify/channel"
+	"github.com/toretto460/notify"
 	"github.com/toretto460/notify/model"
 )
 
-func NewSendMessage(factory *channel.Factory) SendMessage {
+func NewSendMessage(factory notify.ChannelFactory) SendMessage {
 	return SendMessage{
 		factory: factory,
 	}
 }
 
 type SendMessage struct {
-	factory *channel.Factory
+	factory notify.ChannelFactory
 }
 
 func (e *SendMessage) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +37,7 @@ func (e *SendMessage) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = ch.Send(r.Context(), model.NewMessage(payload))
+	err = ch.Send(r.Context(), model.NewMessage("test", payload))
 
 	if err != nil {
 		w.Write([]byte(err.Error()))
