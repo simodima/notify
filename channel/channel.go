@@ -64,5 +64,5 @@ func (c *Channel) Send(ctx context.Context, ev model.Message) error {
 
 // Receive returns a go chan to receive messages over the channel
 func (c *Channel) Receive(ctx context.Context) (chan model.Message, error) {
-	return c.d.GetEvents(ctx, c.id)
+	return c.d.Receive(ctx, c.id)
 }
