@@ -1,6 +1,9 @@
 # Notify
 
-Notify is a library to create a notification systems. Imagine you want to send **server sent events** to the browser through HTTP or you've been asked to send user feedbacks after long running processes; this is the right place for you.
+![gopher](./doc/gopher.png)
+
+Notify is a library to create notification systems.
+Imagine that you want to send **server sent events** to the browser through HTTP or you've been asked to send user feedbacks after long running processes; this is the right place for you.
 
 Notify works with a [pub-sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) model at its core; it esposes a minimal API to Publish and Subscribe to a channel.
 
@@ -63,7 +66,6 @@ NOTE: Beware that the standalone driver is meant to be used only for development
 redisCli := redis.NewClient(&redis.Options{
     Addr: "localhost:6379",
 })
-ctx := context.Background()
 redisDriver := driver.NewRedis(redisCli)
 ```
 </details>
@@ -82,10 +84,9 @@ stdDriver := driver.NewStandalone(ctx)
 The channel factory is the entity that let's you to create a new channel `channeFactory.New()` or get and existing one `channeFactory.Get("channel-identifier")`
 
 ```go
-ctx := context.TODO()
 
-stdDriver := driver.NewStandalone(ctx)
-channeFactory := channel.NewFactory(&stdDriver)
+ctx := context.TODO()
+channeFactory := notify.Standalone(ctx)
 
 // now you can create a new channel or get an existent one
 ch , err := channeFactory.New()
