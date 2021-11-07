@@ -53,7 +53,7 @@ func (c *StandaloneClient) Init(ctx context.Context, id string) error {
 	return nil
 }
 
-func (c *StandaloneClient) GetEvents(ctx context.Context, id string) (chan model.Message, error) {
+func (c *StandaloneClient) Receive(ctx context.Context, id string) (chan model.Message, error) {
 	return c.getOrCreateChan(id), nil
 }
 

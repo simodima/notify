@@ -38,8 +38,8 @@ func (c *RedisClient) Init(context.Context, string) error {
 	return nil
 }
 
-// GetEvents allows to read the events for the given id
-func (c *RedisClient) GetEvents(ctx context.Context, id string) (chan model.Message, error) {
+// Receive allows to read the events for the given id
+func (c *RedisClient) Receive(ctx context.Context, id string) (chan model.Message, error) {
 	pubsub := c.rds.Subscribe(ctx, id)
 	ch := pubsub.Channel()
 

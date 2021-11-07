@@ -21,7 +21,7 @@ import (
 
 type driver interface {
 	Init(context.Context, string) error
-	GetEvents(context.Context, string) (chan model.Message, error)
+	Receive(context.Context, string) (chan model.Message, error)
 	Send(context.Context, model.Message, string) error
 }
 
