@@ -15,6 +15,8 @@ package driver
 
 import (
 	"context"
+	"encoding/json"
+	"log"
 
 	"github.com/go-redis/redis/v8"
 
@@ -51,7 +53,13 @@ func (c *RedisClient) Receive(ctx context.Context, id string) (chan model.Messag
 				pubsub.Close()
 				return
 			case msg := <-ch:
-				events <- model.NewMessage([]byte(msg.Payload))
+				var message model.Message
+				err := json.Unmarshal([]byte(msg.Payload), &message)
+				if err != nil {
+					log.Printf("Error on %T json unmarshaling", message)
+					continue
+				}
+				events <- message
 			}
 		}
 	}()
@@ -61,5 +69,10 @@ func (c *RedisClient) Receive(ctx context.Context, id string) (chan model.Messag
 
 // Send sends an event to the given id
 func (c *RedisClient) Send(ctx context.Context, ev model.Message, id string) error {
-	return c.rds.Publish(ctx, id, ev.Data()).Err()
+	data, err := json.Marshal(&ev)
+	if err != nil {
+		return err
+	}
+
+	return c.rds.Publish(ctx, id, data).Err()
 }
