@@ -14,26 +14,56 @@
 package model
 
 import (
-	"fmt"
-	"io"
+	"encoding/json"
 )
 
 // Message is the event sent or received from a Channel
 type Message struct {
+	name string
 	data []byte
 }
 
 // NewMessage creates a new Message
-func NewMessage(d []byte) Message {
-	return Message{data: d}
+func NewMessage(name string, d []byte) Message {
+	return Message{data: d, name: name}
+}
+
+// UnmarshalJSON unmarshal byte slice into a model.Message
+func (e *Message) UnmarshalJSON(data []byte) error {
+	rawMsg := struct {
+		Name string
+		Data []byte
+	}{}
+	err := json.Unmarshal(data, &rawMsg)
+	if err != nil {
+		return err
+	}
+
+	e.data = rawMsg.Data
+	e.name = rawMsg.Name
+
+	return nil
+}
+
+// MarshalJSON marshal a model.Message into an byte slice
+func (e *Message) MarshalJSON() ([]byte, error) {
+	rawMsg := struct {
+		Name string
+		Data []byte
+	}{
+		Data: e.data,
+		Name: e.name,
+	}
+
+	return json.Marshal(&rawMsg)
+}
+
+// Name returns the message name
+func (e *Message) Name() string {
+	return e.name
 }
 
 // Data returns the message data
 func (e *Message) Data() []byte {
 	return e.data
-}
-
-// Write let the message write itself to the given io.Writer
-func (e *Message) Write(w io.Writer) {
-	fmt.Fprintf(w, "data: %s\n\n", string(e.Data()))
 }
