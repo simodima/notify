@@ -15,6 +15,8 @@ package model
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 )
 
 // Message is the event sent or received from a Channel
@@ -66,4 +68,11 @@ func (e *Message) Name() string {
 // Data returns the message data
 func (e *Message) Data() []byte {
 	return e.data
+}
+
+func (e *Message) Write(w io.Writer) {
+	if e.name != "" {
+		fmt.Fprintf(w, "event: %s\n", e.Name())
+	}
+	fmt.Fprintf(w, "data: %s\n\n", string(e.Data()))
 }
