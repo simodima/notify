@@ -17,17 +17,13 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	"github.com/toretto460/notify/channel"
-	"github.com/toretto460/notify/driver"
+	"github.com/toretto460/notify"
 )
 
 redisCli := redis.NewClient(&redis.Options{
     Addr: "localhost:6379",
 })
-
-ctx := context.Background()
-redisDriver := driver.NewRedis(redisCli)
-chFactory := channel.NewFactory(&redisDriver)
+chFactory := notify.Redis(redisCli)
 
 ch, _ := chFactory.New()
 
@@ -62,20 +58,27 @@ NOTE: Beware that the standalone driver is meant to be used only for development
  
 <details>
 <summary>Redis</summary>
+
 ```go
+
 redisCli := redis.NewClient(&redis.Options{
     Addr: "localhost:6379",
 })
 redisDriver := driver.NewRedis(redisCli)
+
 ```
 </details>
 
 <details>
 <summary>Standalone (only for local testing)</summary>
+
 ```go
+
 ctx := context.TODO()
 stdDriver := driver.NewStandalone(ctx)
+
 ```
+
 </details>
 
 
